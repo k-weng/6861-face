@@ -23,18 +23,13 @@ class Experiment extends React.Component {
   }
 
   countdown() {
-    var state = {
-      seconds: this.state.seconds - 1
-    };
+    var state = { seconds: this.state.seconds - 1 };
 
     if (state.seconds === 0) {
       clearInterval(this.interval);
       state.showImage = true;
       this.setState(state, () => {
-        this.timeout = setTimeout(
-          this.showButtons,
-          this.props.duration
-        )
+        this.timeout = setTimeout(this.showButtons, this.props.duration)
       });
     } else {
       this.setState(state);
@@ -42,20 +37,17 @@ class Experiment extends React.Component {
   }
 
   showButtons() {
-    this.setState((state) => {
-      return {
+    this.setState({
         showImage: false,
-        imageIdx: state.imageIdx + 1}
+        imageIdx: this.state.imageIdx + 1
     });
   }
 
   handleClick() {
     if (this.state.imageIdx < this.props.images.length) {
-      this.setState({
-        seconds: 3
-      }, () => {
+      this.setState({ seconds: 3 }, () => {
         this.interval = setInterval(this.countdown, 1000);
-      })
+      });
     } else {
       this.props.onFinish("Done");
     }
@@ -63,12 +55,13 @@ class Experiment extends React.Component {
 
   render() {
     if (this.state.showImage) {
-      return <img src={`http://localhost:5000/images/${this.props.images[this.state.imageIdx]}`} alt="face"/>
+      let imgUrl = this.props.images[this.state.imageIdx][0]
+      return <img src={`http://localhost:5000/images/${imgUrl}`} alt="face"/>
     } else if (this.state.seconds === 0) {
       return (
         <div>
-            <button type='button' onClick={() => { this.handleClick() }}> Real </button>
-            <button type='button' onClick={() => { this.handleClick() }}> Fake </button>
+            <button type='button' onClick={() => {this.handleClick()}}>Real</button>
+            <button type='button' onClick={() => {this.handleClick()}}>Fake</button>
         </div>
       )
     } else {

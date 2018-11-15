@@ -7,59 +7,57 @@ class Experiments extends React.Component {
     super(props);
 
     let exptIds = [1, 2];
+    let exptImgTypes = [['gan', 'real'], ['gan-blur', 'real-blur']];
     let durations = [100, 500, 1000, 2000, 5000];
     let expts = [];
-    exptIds.forEach(e => {
+    exptIds.forEach((e, i) => {
       durations.forEach(d => {
-        expts.push({exptId: e, duration: d})
+        expts.push({exptId: e, duration: d, imgTypes: exptImgTypes[i]});
       });
-    })
+    });
 
     this.state = {
       images: [],
       currExptIdx: 0,
       expts: expts,
       exptOngoing: false,
-      exptsDone: false
+      exptsDone: false,
+      numImgs: 10
     };
 
     this.startExperiment = this.startExperiment.bind(this);
   }
 
   componentDidMount() {
-    fetch("http://localhost:5000/images")
+    let exptId = this.state.expts[this.state.currExptIdx].exptId;
+    fetch(`http://localhost:5000/images/experiment/${exptId}?n=${this.state.numImgs}`)
     .then(r => r.json())
-    .then(r => { this.setState({ images: r }) })
+    .then(r => { this.setState({ images: r }) });
   }
 
   startExperiment() {
-    this.setState({
-      exptOngoing: true
-    })
+    this.setState({ exptOngoing: true });
   }
 
   finishExperiment(data) {
     if (this.state.currExptIdx < this.state.expts.length - 1) {
-      fetch("http://localhost:5000/images")
+      let exptId = this.state.expts[this.state.currExptIdx].exptId;
+      fetch(`http://localhost:5000/images/experiment/${exptId}?n=${this.state.numImgs}`)
       .then(r => r.json())
       .then(r => { 
-        this.setState((state) => {
-          return {
+        this.setState({
             images: r,
             exptOngoing: false,
-            currExptIdx: state.currExptIdx + 1
-          }
-        })
-      })
+            currExptIdx: this.state.currExptIdx + 1
+        });
+      });
     } else {
       this.setState({exptsDone: true});
     }
   }
 
   render() {
-    if (this.state.exptsDone) {
-      return <h1>All Done!</h1>
-    }
+    if (this.state.exptsDone) { return <h1>All Done!</h1> }
 
     let expt = this.state.expts[this.state.currExptIdx];
     return this.state.exptOngoing 
