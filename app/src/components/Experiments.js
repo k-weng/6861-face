@@ -7,12 +7,11 @@ class Experiments extends React.Component {
     super(props);
 
     let exptIds = [1, 2];
-    let exptImgTypes = [['gan', 'real'], ['gan-blur', 'real-blur']];
     let durations = [100, 500, 1000, 2000, 5000];
     let expts = [];
-    exptIds.forEach((e, i) => {
+    exptIds.forEach(e => {
       durations.forEach(d => {
-        expts.push({exptId: e, duration: d, imgTypes: exptImgTypes[i]});
+        expts.push({exptId: e, duration: d});
       });
     });
 
@@ -40,9 +39,25 @@ class Experiments extends React.Component {
   }
 
   finishExperiment(data) {
+    let expt = this.state.expts[this.state.currExptIdx];
+    let payload = {
+      gender: this.props.location.state.gender,
+      age: this.props.location.state.age,
+      results: data,
+      images: this.state.images,
+      duration: expt.duration
+    }
+
+    fetch(`http://localhost:5000/experiment/${expt.exptId}`, {
+      method: 'post',
+      body: JSON.stringify(payload),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
     if (this.state.currExptIdx < this.state.expts.length - 1) {
-      let exptId = this.state.expts[this.state.currExptIdx].exptId;
-      fetch(`http://localhost:5000/images/experiment/${exptId}?n=${this.state.numImgs}`)
+      fetch(`http://localhost:5000/images/experiment/${expt.exptId}?n=${this.state.numImgs}`)
       .then(r => r.json())
       .then(r => { 
         this.setState({
@@ -57,7 +72,7 @@ class Experiments extends React.Component {
   }
 
   render() {
-    if (this.state.exptsDone) { return <h1>All Done!</h1> }
+    if (this.state.exptsDone) { return <h1>All Done! Thanks!</h1> }
 
     let expt = this.state.expts[this.state.currExptIdx];
     return this.state.exptOngoing 

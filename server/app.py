@@ -3,9 +3,22 @@ import os
 import random
 from flask import Flask, request, Response, jsonify, send_from_directory
 from flask_cors import CORS, cross_origin
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+db = SQLAlchemy(app)
 CORS(app)
+
+class Experiment(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    expt_id = db.Column(db.Integer, nullable=False)
+    duration = db.Column(db.Integer, nullable=False)
+    true = db.Column(db.Boolean, nullable=False)
+    pred = db.Column(db.Boolean, nullable=False)
+    age = db.Column(db.Integer, nullable=False)
+    gender = db.Column(db.String(80), nullable=False)
+    filename = db.Column(db.String(120), nullable=False)
 
 @app.route("/")
 def index():
@@ -26,6 +39,24 @@ def get_images(id):
 @app.route('/images/<dir>/<filename>')
 def get_image(dir, filename):
     return send_from_directory(os.path.join('static', dir), filename)
+
+@app.route('/experiment/<id>', methods=['POST'])
+def post_results(id):
+    data = request.json
+    for (res, img) in zip(data['results'], data['images']):
+        expt = Experiment(
+            expt_id = int(id),
+            duration = data['duration'],
+            true = img[1],
+            pred = res,
+            age = int(data['age']),
+            gender = data['gender'],
+            filename = img[0]
+        )
+        db.session.add(expt)
+    db.session.commit()
+    print("Success")
+    return "Success"
 
 EXPTS = {
     '1': [('gan', 0), ('real', 1)],

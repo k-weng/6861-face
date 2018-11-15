@@ -6,12 +6,13 @@ class Experiment extends React.Component {
     this.state = {
       imageIdx: 0,
       showImage: false,
-      seconds: 3
+      seconds: 3,
+      results: []
     };
 
     this.handleClick = this.handleClick.bind(this);
     this.countdown = this.countdown.bind(this);
-    this.showButtons = this.showButtons.bind(this);
+    this.answer = this.answer.bind(this);
   }
 
   componentDidMount() {
@@ -28,28 +29,28 @@ class Experiment extends React.Component {
     if (state.seconds === 0) {
       clearInterval(this.interval);
       state.showImage = true;
-      this.setState(state, () => {
-        this.timeout = setTimeout(this.showButtons, this.props.duration)
-      });
+      this.setState(state, () => { this.timeout = setTimeout(this.answer, this.props.duration) });
     } else {
       this.setState(state);
     }
   }
 
-  showButtons() {
-    this.setState({
-        showImage: false,
-        imageIdx: this.state.imageIdx + 1
-    });
+  answer() {
+    this.setState({ showImage: false });
   }
 
-  handleClick() {
-    if (this.state.imageIdx < this.props.images.length) {
-      this.setState({ seconds: 3 }, () => {
-        this.interval = setInterval(this.countdown, 1000);
-      });
+  handleClick(ans) {
+    let results = this.state.results.concat(ans);
+    let newState = {
+      seconds: 3,
+      results: results,
+      imageIdx: this.state.imageIdx + 1
+    }
+
+    if (newState.imageIdx < this.props.images.length) {
+      this.setState(newState, () => { this.interval = setInterval(this.countdown, 1000) });
     } else {
-      this.props.onFinish("Done");
+      this.props.onFinish(results);
     }
   }
 
@@ -60,8 +61,8 @@ class Experiment extends React.Component {
     } else if (this.state.seconds === 0) {
       return (
         <div>
-            <button type='button' onClick={() => {this.handleClick()}}>Real</button>
-            <button type='button' onClick={() => {this.handleClick()}}>Fake</button>
+            <button type='button' onClick={() => {this.handleClick(1)}}>Real</button>
+            <button type='button' onClick={() => {this.handleClick(0)}}>Fake</button>
         </div>
       )
     } else {
