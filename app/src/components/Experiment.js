@@ -4,42 +4,59 @@ class Experiment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      images: [],
       imageIdx: 0,
-      hideImage: false
+      showImage: false,
+      seconds: 3
     };
 
-    this.showButtons = this.showButtons.bind(this)
-    this.nextImage = this.nextImage.bind(this)
+    this.handleClick = this.handleClick.bind(this);
+    this.nextImage = this.nextImage.bind(this);
+    this.countdown = this.countdown.bind(this);
   }
 
   componentDidMount() {
-    fetch("http://localhost:5000/images")
-    .then(r => r.json())
-    .then(r => { this.setState({ images: r }) })
-
-    this.timeout = setTimeout(
-      this.showButtons,
-      500
-    )
+    this.interval = setInterval(this.countdown, 1000);
   }
 
-  showButtons() {
-    this.setState((state) => {
-      return {
-        hideImage: true,
-        imageIdx: state.imageIdx + 1}
-    });
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  countdown() {
+    var state = {
+      seconds: this.state.seconds - 1
+    };
+
+    if (state.seconds === 0) {
+      clearInterval(this.interval);
+      state.showImage = true;
+    }
+
+    this.setState(state);
+  }
+
+  handleClick() {
+    if (this.state.imageIdx < this.props.images.length) {
+        this.setState({
+            
+        })
+    }
+    this.props.onFinish("Done");
+    // this.setState((state) => {
+    //   return {
+    //     hideImage: true,
+    //     imageIdx: state.imageIdx + 1}
+    // });
   }
 
   nextImage() {
-    if (this.state.imageIdx < this.state.images.length) {
+    if (this.state.imageIdx < this.props.images.length) {
       this.setState({
         hideImage: false
       }, () => {
         this.timeout = setTimeout(
           this.showButtons,
-          500
+          5000
         )
       })
     } else {
@@ -48,14 +65,21 @@ class Experiment extends React.Component {
   }
 
   render() {
-    var view = !this.state.hideImage 
-      ? <img src={`http://localhost:5000/images/${this.state.images[this.state.imageIdx]}`} alt="face"/>
-      : <div>
-        <button type='button' onClick={() => { this.nextImage() }}> Real </button>
-        <button type='button' onClick={() => { this.nextImage() }}> Fake </button>
-      </div>
+    // var view = !this.state.hideImage 
+    //   ? <img src={`http://localhost:5000/images/${this.state.images[this.state.imageIdx]}`} alt="face"/>
+    //   : <div>
+    //     <button type='button' onClick={() => { this.nextImage() }}> Real </button>
+    //     <button type='button' onClick={() => { this.nextImage() }}> Fake </button>
+    //   </div>
+    // return <div>{ view }</div>
 
-    return <div>{ view }</div>
+    return (
+        <div>
+            <div>{this.state.countdown}</div>
+            <button type='button' onClick={() => { this.handleClick() }}> Real </button>
+            <button type='button' onClick={() => { this.handleClick() }}> Fake </button>
+        </div>
+    );
   }
 }
 
