@@ -6,8 +6,8 @@ class Experiments extends React.Component {
   constructor(props) {
     super(props);
 
-    let exptIds = [1];
-    let durations = [100];
+    let exptIds = [1, 2];
+    let durations = [100, 500, 1000, 2000, 5000];
     let expts = [];
     exptIds.forEach(e => {
       durations.forEach(d => {
