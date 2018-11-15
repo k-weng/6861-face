@@ -10,8 +10,8 @@ class Experiment extends React.Component {
     };
 
     this.handleClick = this.handleClick.bind(this);
-    this.nextImage = this.nextImage.bind(this);
     this.countdown = this.countdown.bind(this);
+    this.showButtons = this.showButtons.bind(this);
   }
 
   componentDidMount() {
@@ -30,56 +30,50 @@ class Experiment extends React.Component {
     if (state.seconds === 0) {
       clearInterval(this.interval);
       state.showImage = true;
+      this.setState(state, () => {
+        this.timeout = setTimeout(
+          this.showButtons,
+          this.props.duration
+        )
+      });
+    } else {
+      this.setState(state);
     }
+  }
 
-    this.setState(state);
+  showButtons() {
+    this.setState((state) => {
+      return {
+        showImage: false,
+        imageIdx: state.imageIdx + 1}
+    });
   }
 
   handleClick() {
     if (this.state.imageIdx < this.props.images.length) {
-        this.setState({
-            
-        })
-    }
-    this.props.onFinish("Done");
-    // this.setState((state) => {
-    //   return {
-    //     hideImage: true,
-    //     imageIdx: state.imageIdx + 1}
-    // });
-  }
-
-  nextImage() {
-    if (this.state.imageIdx < this.props.images.length) {
       this.setState({
-        hideImage: false
+        seconds: 3
       }, () => {
-        this.timeout = setTimeout(
-          this.showButtons,
-          5000
-        )
+        this.interval = setInterval(this.countdown, 1000);
       })
     } else {
-      alert("No more images")
+      this.props.onFinish("Done");
     }
   }
 
   render() {
-    // var view = !this.state.hideImage 
-    //   ? <img src={`http://localhost:5000/images/${this.state.images[this.state.imageIdx]}`} alt="face"/>
-    //   : <div>
-    //     <button type='button' onClick={() => { this.nextImage() }}> Real </button>
-    //     <button type='button' onClick={() => { this.nextImage() }}> Fake </button>
-    //   </div>
-    // return <div>{ view }</div>
-
-    return (
+    if (this.state.showImage) {
+      return <img src={`http://localhost:5000/images/${this.props.images[this.state.imageIdx]}`} alt="face"/>
+    } else if (this.state.seconds === 0) {
+      return (
         <div>
-            <div>{this.state.countdown}</div>
             <button type='button' onClick={() => { this.handleClick() }}> Real </button>
             <button type='button' onClick={() => { this.handleClick() }}> Fake </button>
         </div>
-    );
+      )
+    } else {
+      return <div>{this.state.seconds}</div>
+    }
   }
 }
 

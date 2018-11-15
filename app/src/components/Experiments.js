@@ -6,8 +6,8 @@ class Experiments extends React.Component {
   constructor(props) {
     super(props);
 
-    let exptIds = [1, 2];
-    let durations = [100, 500, 1000, 2000, 5000];
+    let exptIds = [1];
+    let durations = [100];
     let expts = [];
     exptIds.forEach(e => {
       durations.forEach(d => {
@@ -20,6 +20,7 @@ class Experiments extends React.Component {
       currExptIdx: 0,
       expts: expts,
       exptOngoing: false,
+      exptsDone: false
     };
 
     this.startExperiment = this.startExperiment.bind(this);
@@ -38,21 +39,28 @@ class Experiments extends React.Component {
   }
 
   finishExperiment(data) {
-    fetch("http://localhost:5000/images")
-    .then(r => r.json())
-    .then(r => { 
-      this.setState((state) => {
-        console.log(r);
-        return {
-          images: r,
-          exptOngoing: false,
-          currExptIdx: state.currExptIdx + 1
-        }
+    if (this.state.currExptIdx < this.state.expts.length - 1) {
+      fetch("http://localhost:5000/images")
+      .then(r => r.json())
+      .then(r => { 
+        this.setState((state) => {
+          return {
+            images: r,
+            exptOngoing: false,
+            currExptIdx: state.currExptIdx + 1
+          }
+        })
       })
-    })
+    } else {
+      this.setState({exptsDone: true});
+    }
   }
 
   render() {
+    if (this.state.exptsDone) {
+      return <h1>All Done!</h1>
+    }
+
     let expt = this.state.expts[this.state.currExptIdx];
     return this.state.exptOngoing 
       ? <Experiment exptId={expt.exptId}
