@@ -28,12 +28,16 @@ class Instructions extends React.Component {
     
     return (
         <div className="mt6">
-            <h1>Instructions</h1>
+            <h1>Experiment ({this.props.exptId}): {this.props.duration / 1000} seconds</h1>
             <p className="ph7-l ph5">
-              For this experiment, images (like the ones below) will flash for <b>{this.props.duration / 1000}</b> seconds.
-              After showing an image, answer whether you think the flashed image was real or fake.
+              For this experiment, images of faces will flash for <b>{this.props.duration / 1000}</b> seconds.<br></br>
+              After each image disappears, answer whether you think the face was real or fake.
             </p>
             <div className="flex flex-row flex-wrap justify-center mb3">{ images }</div>
+            <p className="ph7-l ph5">
+              The two faces to the left are <b>REAL</b>, and the two faces on the right are <b>FAKE</b>.<br></br>
+              Please note that blurring artifacts may be present for both real or fake images.
+            </p>
             <button type='button' onClick={() => {this.handleClick()}}>Start</button>
         </div>
     );
