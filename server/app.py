@@ -21,6 +21,11 @@ class Experiment(db.Model):
     gender = db.Column(db.String(80), nullable=False)
     filename = db.Column(db.String(120), nullable=False)
 
+    def __repr__(self):
+        return "id=%-5d, exp=%d, dur=%d, y=%-5r, pred=%-5r, age=%d, gender=%-6s, filename=%s" % (
+          self.id, self.expt_id, self.duration, self.true, self.pred, self.age, self.gender, self.filename
+        )
+
 @app.route("/")
 def index():
     return "Hello World!"
@@ -67,6 +72,11 @@ def post_results(id):
     db.session.commit()
     print("Success")
     return "Success"
+
+@app.route('/results', methods=['GET'])
+def get_results():
+    exps = Experiment.query.all()
+    return json.dumps([str(e) for e in exps])
 
 EXPTS = {
     '1': [('real', 1), ('gan', 0)],
