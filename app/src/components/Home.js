@@ -31,10 +31,10 @@ class Home extends React.Component {
   render() {
     return (
       <div>
-        <h1>Welcome to the Experiment!</h1>
+        <h1>Welcome to the Real/Fake Face experiment!</h1>
         <form onSubmit={this.handleSubmit}>
           <label>
-            Age: 
+            Age:
             <input type="number" name="age" min="18" max="99" onChange={this.handleChange} className="ml2 w3"/>
           </label>
           <select name="gender" onChange={this.handleChange} className="mh3">
