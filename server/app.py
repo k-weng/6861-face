@@ -37,6 +37,16 @@ def get_images(id):
     random.shuffle(res)
     return json.dumps(res)
 
+@app.route("/images/experiment/<id>/repr")
+def get_repr_images(id):
+    res = []
+    for (dir, is_real) in EXPTS[id]:
+        path = os.path.join(os.path.dirname(__file__), 'static', f'{dir}-repr')
+        images = os.listdir(path)
+        res += [os.path.join(f'{dir}-repr', img) for img in images]
+    random.shuffle(res)
+    return json.dumps(res)
+
 @app.route('/images/<dir>/<filename>')
 def get_image(dir, filename):
     return send_from_directory(os.path.join('static', dir), filename)

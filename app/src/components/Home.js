@@ -35,9 +35,9 @@ class Home extends React.Component {
         <form onSubmit={this.handleSubmit}>
           <label>
             Age: 
-            <input type="number" name="age" onChange={this.handleChange} />
+            <input type="number" name="age" onChange={this.handleChange} className="ml2 w3"/>
           </label>
-          <select name="gender" onChange={this.handleChange}>
+          <select name="gender" onChange={this.handleChange} className="mh3">
             <option value="male">Male</option>
             <option value="female">Female</option>
             <option value="other">Other</option>

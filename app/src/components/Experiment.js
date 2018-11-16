@@ -55,19 +55,22 @@ class Experiment extends React.Component {
   }
 
   render() {
+    let view;
     if (this.state.showImage) {
       let imgUrl = this.props.images[this.state.imageIdx][0]
-      return <img src={`http://localhost:5000/images/${imgUrl}`} alt="face"/>
+      view = <img src={`http://localhost:5000/images/${imgUrl}`} alt="face" width="256" height="256"/>
     } else if (this.state.seconds === 0) {
-      return (
-        <div>
-            <button type='button' onClick={() => {this.handleClick(1)}}>Real</button>
+      view = (
+        <div className="pt6">
+            <button type='button' onClick={() => {this.handleClick(1)}} className="mr3">Real</button>
             <button type='button' onClick={() => {this.handleClick(0)}}>Fake</button>
         </div>
       )
     } else {
-      return <div>{this.state.seconds}</div>
+      view = <div className="f1 fw6 mt5">{this.state.seconds}</div>
     }
+
+    return <div className="pt6">{ view }</div>
   }
 }
 
