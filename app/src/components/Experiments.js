@@ -28,12 +28,20 @@ class Experiments extends React.Component {
   }
 
   startExperiment() {
-    this.setState({ exptOngoing: true });
-
     let exptId = this.state.expts[this.state.currExptIdx].exptId;
     fetch(`http://localhost:5000/images/experiment/${exptId}?n=${this.state.numImgs}`)
     .then(r => r.json())
-    .then(r => { this.setState({ images: r }) });
+    .then(r => {
+      r.forEach(e => {
+        const img = new Image();
+        img.src = `http://localhost:5000/images/${e[0]}`;
+      });
+
+      this.setState({
+        images: r,
+        exptOngoing: true
+      })
+    });
   }
 
   finishExperiment(data) {

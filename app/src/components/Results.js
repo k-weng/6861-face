@@ -19,13 +19,13 @@ class Results extends React.Component {
     let rows = this.state.data.map(
       (row, i) => <li key={i}>{row}</li>
     );
-    
+
     return (
-        <div>
-            <ul>
-            { rows }
-            </ul>
-        </div>
+      <div>
+        <ul>
+        { rows }
+        </ul>
+      </div>
     );
   }
 }
