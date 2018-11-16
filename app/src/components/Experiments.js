@@ -21,7 +21,7 @@ class Experiments extends React.Component {
       expts: expts,
       exptOngoing: false,
       exptsDone: false,
-      numImgs: 5
+      numImgs: 6
     };
 
     this.startExperiment = this.startExperiment.bind(this);
