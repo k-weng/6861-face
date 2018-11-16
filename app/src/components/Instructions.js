@@ -7,7 +7,7 @@ class Instructions extends React.Component {
     this.state = {
       images: []
     }
-    
+
     this.handleClick = this.handleClick.bind(this);
   }
 
@@ -25,7 +25,7 @@ class Instructions extends React.Component {
     let images = this.state.images.map(
       (img, i) => <img src={`http://localhost:5000/images/${img}`} alt="face" key={i} className="w4 h4 ph2"/>
     );
-    
+
     return (
         <div className="mt6">
             <h1>Experiment ({this.props.exptId}): {this.props.duration / 1000} seconds</h1>
@@ -33,7 +33,7 @@ class Instructions extends React.Component {
               For this experiment, images of faces will flash for <b>{this.props.duration / 1000}</b> seconds.<br></br>
               After each image disappears, answer whether you think the face was real or fake.
             </p>
-            <div className="flex flex-row flex-wrap justify-center mb3">{ images }</div>
+            <div className="flex flex-row-ns flex-column flex-wrap justify-center items-center mb3 h4-ns h5 content-center">{ images }</div>
             <p className="ph7-l ph5">
               The two faces to the left are <b>REAL</b>, and the two faces to the right are <b>FAKE</b>.<br></br>
               Please note that blurring artifacts may be present for both real or fake images.

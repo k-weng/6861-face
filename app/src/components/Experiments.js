@@ -65,7 +65,7 @@ class Experiments extends React.Component {
     if (this.state.currExptIdx < this.state.expts.length - 1) {
       fetch(`http://localhost:5000/images/experiment/${expt.exptId}?n=${this.state.numImgs}`)
       .then(r => r.json())
-      .then(r => { 
+      .then(r => {
         this.setState({
             images: r,
             exptOngoing: false,
@@ -81,7 +81,7 @@ class Experiments extends React.Component {
     if (this.state.exptsDone) { return <h1>All Done! Thanks!</h1> }
 
     let expt = this.state.expts[this.state.currExptIdx];
-    return this.state.exptOngoing 
+    return this.state.exptOngoing
       ? <Experiment exptId={expt.exptId}
                     duration={expt.duration}
                     images={this.state.images}
