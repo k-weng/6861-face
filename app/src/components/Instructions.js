@@ -35,7 +35,7 @@ class Instructions extends React.Component {
             </p>
             <div className="flex flex-row flex-wrap justify-center mb3">{ images }</div>
             <p className="ph7-l ph5">
-              The two faces to the left are <b>REAL</b>, and the two faces on the right are <b>FAKE</b>.<br></br>
+              The two faces to the left are <b>REAL</b>, and the two faces to the right are <b>FAKE</b>.<br></br>
               Please note that blurring artifacts may be present for both real or fake images.
             </p>
             <button type='button' onClick={() => {this.handleClick()}}>Start</button>
