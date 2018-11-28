@@ -16,31 +16,48 @@ class Experiments extends React.Component {
     });
 
     this.state = {
+      exptIds: exptIds,
+      imageSets: [],
       images: [],
       currExptIdx: 0,
+      currImgSetIdx: 0,
       expts: expts,
       exptOngoing: false,
       exptsDone: false,
-      numImgs: 6
+      numImgs: 6,
+      numTrials: durations.length
     };
 
     this.startExperiment = this.startExperiment.bind(this);
   }
 
-  startExperiment() {
-    let exptId = this.state.expts[this.state.currExptIdx].exptId;
-    fetch(`http://localhost:5000/images/experiment/${exptId}?n=${this.state.numImgs}`)
-    .then(r => r.json())
-    .then(r => {
-      r.forEach(e => {
-        const img = new Image();
-        img.src = `http://localhost:5000/images/${e[0]}`;
-      });
+  componentDidMount() {
+    let urls = this.state.exptIds.map(e =>
+      `http://localhost:5000/images/experiment/${e}?n=${this.state.numImgs * this.state.numTrials}`
+    );
 
-      this.setState({
-        images: r,
-        exptOngoing: true
+    Promise.all(urls.map(u =>
+      fetch(u).then(r => r.json())
+    )).then(r => {
+      r.forEach(s => {
+        s.forEach(i => {
+          const img = new Image();
+          img.src = `http://localhost:5000/images/${i[0]}`;
+        })
       })
+      this.setState({
+        imageSets: r
+      })
+    });
+  }
+
+  startExperiment() {
+    let imageSets = this.state.imageSets;
+    let images = imageSets[this.state.currImgSetIdx].splice(0, this.state.numImgs);
+    this.setState({
+      exptOngoing: true,
+      images: images,
+      imageSets: imageSets
     });
   }
 
@@ -63,14 +80,11 @@ class Experiments extends React.Component {
     });
 
     if (this.state.currExptIdx < this.state.expts.length - 1) {
-      fetch(`http://localhost:5000/images/experiment/${expt.exptId}?n=${this.state.numImgs}`)
-      .then(r => r.json())
-      .then(r => {
-        this.setState({
-            images: r,
-            exptOngoing: false,
-            currExptIdx: this.state.currExptIdx + 1
-        });
+      this.setState({
+        exptOngoing: false,
+        currExptIdx: this.state.currExptIdx + 1,
+        currImgSetIdx: this.state.imageSets[this.state.currImgSetIdx].length === 0
+          ? this.state.currImgSetIdx + 1 : this.state.currImgSetIdx
       });
     } else {
       this.setState({exptsDone: true});
