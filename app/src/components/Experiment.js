@@ -4,12 +4,15 @@ class Experiment extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      score: 0,
       imageIdx: 0,
       showImage: false,
       seconds: 3,
-      results: []
+      results: [],
+      done: false
     };
 
+    this.finishExperiment = this.finishExperiment.bind(this);
     this.handleClick = this.handleClick.bind(this);
     this.countdown = this.countdown.bind(this);
     this.answer = this.answer.bind(this);
@@ -41,33 +44,52 @@ class Experiment extends React.Component {
 
   handleClick(ans) {
     let results = this.state.results.concat(ans);
+    let score = this.state.score + (ans === this.props.images[this.state.imageIdx][1]);
     let newState = {
       seconds: 3,
       results: results,
-      imageIdx: this.state.imageIdx + 1
+      imageIdx: this.state.imageIdx + 1,
+      score: score
     }
 
     if (newState.imageIdx < this.props.images.length) {
       this.setState(newState, () => { this.interval = setInterval(this.countdown, 1000) });
     } else {
-      this.props.onFinish(results);
+      this.setState({
+        done: true,
+        results: results,
+        score: score
+      });
     }
+  }
+
+  finishExperiment() {
+    this.props.onFinish(this.state.results);
   }
 
   render() {
     let view;
-    if (this.state.showImage) {
-      let imgUrl = this.props.images[this.state.imageIdx][0]
-      view = <img src={`http://localhost:5000/images/${imgUrl}`} alt="face" width="256" height="256"/>
-    } else if (this.state.seconds === 0) {
+    if (this.state.done) {
       view = (
-        <div className="pt6">
-            <button type='button' onClick={() => {this.handleClick(1)}} className="mr3">Real</button>
-            <button type='button' onClick={() => {this.handleClick(0)}}>Fake</button>
+        <div>
+          <div className="pb3">Score: {this.state.score}</div>
+          <button type='button' onClick={() => {this.finishExperiment()}}>Next</button>
         </div>
       )
     } else {
-      view = <div className="f1 fw6 mt5">{this.state.seconds}</div>
+      if (this.state.showImage) {
+        let imgUrl = this.props.images[this.state.imageIdx][0]
+        view = <img src={`http://localhost:5000/images/${imgUrl}`} alt="face" width="256" height="256"/>
+      } else if (this.state.seconds === 0) {
+        view = (
+          <div className="pt6">
+              <button type='button' onClick={() => {this.handleClick(1)}} className="mr3">Real</button>
+              <button type='button' onClick={() => {this.handleClick(0)}}>Fake</button>
+          </div>
+        )
+      } else {
+        view = <div className="f1 fw6 mt5">{this.state.seconds}</div>
+      }
     }
 
     return <div className="pt6">{ view }</div>
