@@ -10,7 +10,7 @@ class Results extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`http://localhost:5000/results`)
+    fetch(`http://nikola.mit.edu:5000/results`)
     .then(r => r.json())
     .then(r => { this.setState({ data: r }) });
   }

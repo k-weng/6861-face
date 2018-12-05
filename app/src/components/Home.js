@@ -31,8 +31,11 @@ class Home extends React.Component {
   render() {
     return (
       <div>
-        <h1>Welcome to the Real/Fake Face experiment!</h1>
-        <form onSubmit={this.handleSubmit}>
+        <h1>Welcome to the Real/Fake Face study!</h1>
+
+	<small>This study contains 2 experiments, each of which measures your classification accuracy under 5 image exposure times [5s, 2s, 1s, 500ms, 250ms].</small>
+        <br></br><br></br><br></br>
+	<form onSubmit={this.handleSubmit}>
           <label>
             Age:
             <input type="number" name="age" min="18" max="99" onChange={this.handleChange} className="ml2 w3"/>

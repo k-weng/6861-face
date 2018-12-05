@@ -33,16 +33,15 @@ class Experiments extends React.Component {
 
   componentDidMount() {
     let urls = this.state.exptIds.map(e =>
-      `http://localhost:5000/images/experiment/${e}?n=${this.state.numImgs * this.state.numTrials}`
+      `http://nikola.mit.edu:5000/images/experiment/${e}?n=${this.state.numImgs * this.state.numTrials}`
     );
-
     Promise.all(urls.map(u =>
       fetch(u).then(r => r.json())
     )).then(r => {
       r.forEach(s => {
         s.forEach(i => {
           const img = new Image();
-          img.src = `http://localhost:5000/images/${i[0]}`;
+          img.src = `http://nikola.mit.edu:5000/images/${i[0]}`;
         })
       })
       this.setState({
@@ -71,7 +70,7 @@ class Experiments extends React.Component {
       duration: expt.duration
     }
 
-    fetch(`http://localhost:5000/experiment/${expt.exptId}`, {
+    fetch(`http://nikola.mit.edu:5000/experiment/${expt.exptId}`, {
       method: 'post',
       body: JSON.stringify(payload),
       headers: {

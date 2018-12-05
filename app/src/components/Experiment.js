@@ -69,17 +69,18 @@ class Experiment extends React.Component {
 
   render() {
     let view;
+
     if (this.state.done) {
       view = (
         <div>
-          <div className="pb3">Score: {this.state.score}</div>
+          <div className="pb3">Score: {this.state.score} / 6</div>
           <button type='button' onClick={() => {this.finishExperiment()}}>Next</button>
         </div>
       )
     } else {
       if (this.state.showImage) {
         let imgUrl = this.props.images[this.state.imageIdx][0]
-        view = <img src={`http://localhost:5000/images/${imgUrl}`} alt="face" width="256" height="256"/>
+        view = <img src={`http://nikola.mit.edu:5000/images/${imgUrl}`} alt="face" width="256" height="256"/>
       } else if (this.state.seconds === 0) {
         view = (
           <div className="pt6">

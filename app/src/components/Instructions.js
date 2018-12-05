@@ -12,7 +12,7 @@ class Instructions extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`http://localhost:5000/images/experiment/${this.props.exptId}/repr`)
+    fetch(`http://nikola.mit.edu:5000/images/experiment/${this.props.exptId}/repr`)
     .then(r => r.json())
     .then(r => { this.setState({ images: r }) });
   }
@@ -23,7 +23,7 @@ class Instructions extends React.Component {
 
   render() {
     let images = this.state.images.map(
-      (img, i) => <img src={`http://localhost:5000/images/${img}`} alt="face" key={i} className="w4 h4 ph2"/>
+      (img, i) => <img src={`http://nikola.mit.edu:5000/images/${img}`} alt="face" key={i} className="w4 h4 ph2"/>
     );
 
     return (
@@ -39,7 +39,11 @@ class Instructions extends React.Component {
               Please note that blurring artifacts may be present for both real or fake images.
             </p>
             <button type='button' onClick={() => {this.handleClick()}}>Start</button>
-        </div>
+            <br></br><br></br><br></br>
+            <small>All fake images were generated using <a href="https://research.nvidia.com/publication/2017-10_Progressive-Growing-of">NVIDIA's Progressive GAN.</a></small>
+
+          </div>
+
     );
   }
 }
