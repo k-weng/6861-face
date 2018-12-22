@@ -66,7 +66,7 @@ def post_results(id):
             uid = data['uid'],
             age = int(data['age']),
             gender = data['gender'],
-            expert = data['expert'],
+            expert = (data['expert'] == "true"),
             filename = img[0]
         )
         db.session.add(expt)

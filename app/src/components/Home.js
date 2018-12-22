@@ -9,7 +9,7 @@ class Home extends React.Component {
       uid: crypto.randomBytes(16).toString('hex'),
       age: null,
       gender: "male",
-      expert: false,
+      expert: "false",
     }
 
     this.handleSubmit = this.handleSubmit.bind(this);
