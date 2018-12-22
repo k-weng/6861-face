@@ -1,4 +1,5 @@
 import React from 'react'
+const {serverUrl} = require("./config");
 
 class Experiment extends React.Component {
   constructor(props) {
@@ -64,7 +65,7 @@ class Experiment extends React.Component {
   }
 
   finishExperiment() {
-    this.props.onFinish(this.state.results);
+    this.props.onFinish(this.state.results, this.state.score);
   }
 
   render() {
@@ -73,14 +74,15 @@ class Experiment extends React.Component {
     if (this.state.done) {
       view = (
         <div>
-          <div className="pb3">Score: {this.state.score} / 6</div>
+          <div className="pb3">Experiment ({this.props.exptId}): {this.props.duration / 1000} seconds</div>
+          <div className="pb3">Score: {this.state.score} / {this.props.numImgs}</div>
           <button type='button' onClick={() => {this.finishExperiment()}}>Next</button>
         </div>
       )
     } else {
       if (this.state.showImage) {
         let imgUrl = this.props.images[this.state.imageIdx][0]
-        view = <img src={`http://nikola.mit.edu:5000/images/${imgUrl}`} alt="face" width="256" height="256"/>
+        view = <img src={`http://${serverUrl}/images/${imgUrl}`} alt="face" width="256" height="256"/>
       } else if (this.state.seconds === 0) {
         view = (
           <div className="pt6">

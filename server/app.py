@@ -6,25 +6,23 @@ from flask_cors import CORS, cross_origin
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///database-12-22-18.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 CORS(app)
 
 class Experiment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    uid = db.Column(db.String(16), nullable=False)
     expt_id = db.Column(db.Integer, nullable=False)
     duration = db.Column(db.Integer, nullable=False)
     true = db.Column(db.Boolean, nullable=False)
     pred = db.Column(db.Boolean, nullable=False)
     age = db.Column(db.Integer, nullable=False)
     gender = db.Column(db.String(80), nullable=False)
+    expert = db.Column(db.Boolean, nullable=False)
     filename = db.Column(db.String(120), nullable=False)
 
-    def __repr__(self):
-        return "id=%-5d, exp=%d, dur=%d, y=%-5r, pred=%-5r, age=%d, gender=%-6s, filename=%s" % (
-          self.id, self.expt_id, self.duration, self.true, self.pred, self.age, self.gender, self.filename
-        )
 
 @app.route("/")
 def index():
@@ -46,9 +44,9 @@ def get_images(id):
 def get_repr_images(id):
     res = []
     for (dir, is_real) in EXPTS[id]:
-        path = os.path.join(os.path.dirname(__file__), 'static', f'{dir}-repr')
+        path = os.path.join(os.path.dirname(__file__), 'static', '%s-repr' % dir)
         images = os.listdir(path)
-        res += [os.path.join(f'{dir}-repr', img) for img in images]
+        res += [os.path.join('%s-repr' % dir, img) for img in images]
     return json.dumps(res)
 
 @app.route('/images/<dir>/<filename>')
@@ -58,25 +56,28 @@ def get_image(dir, filename):
 @app.route('/experiment/<id>', methods=['POST'])
 def post_results(id):
     data = request.json
+    # print (data)
     for (res, img) in zip(data['results'], data['images']):
         expt = Experiment(
             expt_id = int(id),
             duration = data['duration'],
             true = img[1],
             pred = res,
+            uid = data['uid'],
             age = int(data['age']),
             gender = data['gender'],
+            expert = data['expert'],
             filename = img[0]
         )
         db.session.add(expt)
     db.session.commit()
-    print("Success")
+    # print("Success")
     return "Success"
 
 @app.route('/results', methods=['GET'])
 def get_results():
     exps = Experiment.query.all()
-    return json.dumps([str(e) for e in exps])
+    return json.dumps({'testing': None})
 
 EXPTS = {
     '1': [('real', 1), ('gan', 0)],

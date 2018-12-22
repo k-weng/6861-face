@@ -1,4 +1,5 @@
 import React from 'react';
+const {serverUrl} = require("./config");
 
 class Results extends React.Component {
   constructor(props) {
@@ -10,20 +11,16 @@ class Results extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`http://nikola.mit.edu:5000/results`)
+    fetch(`http://${serverUrl}/results`)
     .then(r => r.json())
     .then(r => { this.setState({ data: r }) });
   }
 
   render() {
-    let rows = this.state.data.map(
-      (row, i) => <li key={i}>{row}</li>
-    );
-
     return (
       <div>
         <ul>
-        { rows }
+        { this.state.data }
         </ul>
       </div>
     );

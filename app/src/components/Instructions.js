@@ -1,4 +1,5 @@
 import React from 'react';
+const {serverUrl} = require("./config");
 
 class Instructions extends React.Component {
   constructor(props) {
@@ -12,7 +13,7 @@ class Instructions extends React.Component {
   }
 
   componentDidMount() {
-    fetch(`http://nikola.mit.edu:5000/images/experiment/${this.props.exptId}/repr`)
+    fetch(`http://${serverUrl}/images/experiment/${this.props.exptId}/repr`)
     .then(r => r.json())
     .then(r => { this.setState({ images: r }) });
   }
@@ -23,7 +24,7 @@ class Instructions extends React.Component {
 
   render() {
     let images = this.state.images.map(
-      (img, i) => <img src={`http://nikola.mit.edu:5000/images/${img}`} alt="face" key={i} className="w4 h4 ph2"/>
+      (img, i) => <img src={`http://${serverUrl}/images/${img}`} alt="face" key={i} className="w4 h4 ph2"/>
     );
 
     return (
