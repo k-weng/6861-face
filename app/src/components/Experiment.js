@@ -23,6 +23,10 @@ class Experiment extends React.Component {
     this.interval = setInterval(this.countdown, 1000);
   }
 
+  handleImageLoaded() {
+    this.timeout = setTimeout(this.answer, this.props.duration);
+  }
+
   componentWillUnmount() {
     clearInterval(this.interval);
   }
@@ -33,10 +37,8 @@ class Experiment extends React.Component {
     if (state.seconds === 0) {
       clearInterval(this.interval);
       state.showImage = true;
-      this.setState(state, () => { this.timeout = setTimeout(this.answer, this.props.duration) });
-    } else {
-      this.setState(state);
     }
+    this.setState(state);
   }
 
   answer() {
@@ -82,7 +84,7 @@ class Experiment extends React.Component {
     } else {
       if (this.state.showImage) {
         let imgUrl = this.props.images[this.state.imageIdx][0]
-        view = <img src={`http://${serverUrl}/images/${imgUrl}`} alt="face" width="256" height="256"/>
+        view = <img onLoad={this.handleImageLoaded.bind(this)} src={`http://${serverUrl}/images/${imgUrl}`} alt="face" width="256" height="256"/>
       } else if (this.state.seconds === 0) {
         view = (
           <div className="pt6">
