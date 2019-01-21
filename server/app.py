@@ -74,11 +74,6 @@ def post_results(id):
     # print("Success")
     return "Success"
 
-@app.route('/results', methods=['GET'])
-def get_results():
-    exps = Experiment.query.all()
-    return json.dumps({'testing': None})
-
 EXPTS = {
     '1': [('real', 1), ('gan', 0)],
     '2': [('real-blur', 1), ('gan-blur', 0)]
