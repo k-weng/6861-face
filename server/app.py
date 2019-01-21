@@ -51,7 +51,10 @@ def get_repr_images(id):
 
 @app.route('/images/<dir>/<filename>')
 def get_image(dir, filename):
-    return send_from_directory(os.path.join('static', dir), filename)
+    cache_timeout = None
+    if dir == 'plots':
+        cache_timeout = -1
+    return send_from_directory(os.path.join('static', dir), filename, cache_timeout=cache_timeout)
 
 @app.route('/experiment/<id>', methods=['POST'])
 def post_results(id):
